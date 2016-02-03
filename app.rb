@@ -28,7 +28,7 @@ helpers do
 		file = Digest::MD5.hexdigest(url)
 		file_path = File.join("", TMP, file)
 		if File.exists? file_path
-			if File.mtime(file_path).to_i < 3600 + (Time.now.to_i / 3600) * 3600
+			if File.mtime(file_path).to_i > (Time.now.to_i / 3600) * 3600
 				data = File.read(file_path)
 				return JSON.parse(data, {:symbolize_names => true})
 			end
