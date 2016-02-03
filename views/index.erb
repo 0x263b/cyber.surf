@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+	<title><%= @output[0][:title] %></title>
+	<meta name="theme-color" content="#000">
+
+	<link rel="canonical"                href="http://cyber.surf/<%= @output[0][:type] %>/<%= @output[0][:id] %>" />
+
+	<meta property="og:site_name"        content="Cyber Surfing" />
+	<meta property="og:url"              content="http://cyber.surf/<%= @output[0][:type] %>/<%= @output[0][:id] %>" />
+	<meta property="og:title"            content="<%= @output[0][:title] %>" />
+	<meta property="og:type"             content="video.other" />
+
+	<meta property="og:image"            content="<%= @output[0][:thumbnail] %>" />
+	<meta property="og:image:width"      content="<%= @output[0][:width] %>" />
+	<meta property="og:image:height"     content="<%= @output[0][:height] %>" />
+	<meta property="og:description"      content="Surf a sea of cyber images" />
+	<meta property="og:video"            content="<%= @output[0][:mp4] %>" />
+	<meta property="og:video:secure_url" content="<%= @output[0][:mp4] %>" />
+	<meta property="og:video:type"       content="video/mp4" />
+	<meta property="og:video:width"      content="<%= @output[0][:width] %>" />
+	<meta property="og:video:height"     content="<%= @output[0][:height] %>" />
+
+	<meta name="twitter:card"            content="summary_large_image" />
+	<meta name="twitter:site"            content="@cyber_surfing" />
+	<meta name="twitter:title"           content="<%= @output[0][:title] %>" />
+	<meta name="twitter:description"     content="Surf a sea of cyber images" />
+	<meta name="twitter:image"           content="<%= @output[0][:thumbnail] %>" />
+	<meta name="twitter:url"             content="http://cyber.surf/<%= @output[0][:type] %>/<%= @output[0][:id] %>" />
+
+<style type="text/css">
+* {
+	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
+html {
+	height: 100%;
+}
+body {
+	font-family: -apple-system, "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 16px;
+	background-color: black;
+	color: white;
+	height: 100%;
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+a {
+	color: White;
+	text-decoration: none;
+	outline: none;
+}
+	a:hover {
+		color: #50E3C2;
+	}
+
+#video-container {
+	position: relative;
+	background-size: cover;
+	background-position: 50% 50%;
+	height: 100vh;
+	z-index: 0;
+}
+	.large video {
+		transform: translate(-50%, -50%);
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		min-width: 100%;
+		min-height: 100%;
+		width: auto;
+		height: auto;
+		z-index: -100;
+	}
+	.small video {
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		margin: auto;
+		max-width: 100%;
+		max-height: 100%;
+		-moz-user-select: none;
+	}
+	video:focus {
+		border: none;
+		outline: none;
+	}
+
+#hud {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 5;
+	min-height: 100px;
+	height: 20%;
+	transition: all 0.25s ease-in-out;
+}
+	.large #hud {
+		opacity: 0;
+	}
+	.small #hud {
+		opacity: 0.25;
+	}
+	#hud:hover,
+	#hud:active {
+		background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.5));
+		opacity: 1;
+	}
+	#hud:hover header,
+	#hud:active header {
+		background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0));
+	}
+
+header {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	min-height: 100px;
+	height: 15%;
+	z-index: 5;
+	transition: all 0.25s ease-in-out;
+}
+	header a {
+		font-size: 1.5em;
+		line-height: 1.25;
+	}
+
+	#about {
+		position: fixed;
+		top: 15px;
+		right: 20px;
+	}
+
+	#menu {
+		width: 170px;
+		font-size: 1.5em;
+		position: fixed;
+		top: 15px;
+		left: 10px;
+		display: none;
+	}
+		#down {
+			position: absolute;
+			top: 0;
+			right: 0;
+			z-index: -1;
+		}
+		select {
+			background-color: transparent;
+			border: none;
+			border-radius: 0;
+			box-shadow: none;
+			color: white;
+			display: block;
+			font-family: -apple-system, "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+			font-size: 100%;
+			line-height: normal;
+			margin: 0;
+			padding: 0 10px;
+			width: 100%;
+			height: 36px;
+			-webkit-appearance: none;
+			-moz-appearance: none;
+			appearance: none;
+		}
+		select::-ms-expand {
+			display: none;
+		}
+		select:hover {
+			color: #50E3C2;
+		}
+		select:focus {
+			outline: none;
+			box-shadow: 0 0 2px #50E3C2;
+			background-color: #50E3C2;
+			color: black;
+		}
+			option {
+				background-color: black;
+				color: #ccc;
+			}
+			option:checked {
+				color: white;
+			}
+
+#controls {
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+	z-index: 5;
+	line-height: 0;
+}
+	.svg {
+		fill: #fff;
+	}
+	#about:hover .svg,
+	#menu:hover .svg,
+	#next-link:hover .svg,
+	#close:hover .svg {
+		fill: #50E3C2;
+	}
+
+#title {
+	position: fixed;
+	bottom: 20px;
+	left: 20px;
+	z-index: 5;
+	font-size: 1.5em;
+	line-height: 1.25;
+	width: 75%;
+	word-wrap: break-word;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+	#hud:hover #title {
+		white-space: normal;
+	}
+
+#info {
+	display: none;
+	position: fixed;
+	z-index: 10;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	background-color: black;
+	width: 400px;
+	max-width: 100%;
+	padding: 60px 40px;
+	overflow-y: scroll;
+}
+	#close {
+		position: fixed;
+		top: 15px;
+		right: 20px;
+	}
+	#info h1 {
+		margin-top: 0;
+	}
+	#info h1, #info h4 {
+		font-weight: 600;
+	}
+	#info dl {
+		padding: 0;
+		margin: 1em 0 2em;
+		display: flex;
+		flex-wrap: wrap;
+	}
+	#info dt, #info dd {
+		line-height: 2;
+		list-style-type: none;
+		width: 50%;
+		margin: 0;
+		border-bottom: 1px solid #333;
+	}
+	#info a {
+		color: #50E3C2;
+		text-decoration: underline;
+	}
+		.cyan {
+			color: #50E3C2;
+		}
+		.mono {
+			padding: .1em .6em;
+			font-size: 0.85em;
+			background-color: #333;
+			border-radius: 3px;
+			display: inline-block;
+			margin: 0 .1em;
+			line-height: 1.4;
+		}
+
+@media (max-width: 768px) {
+	body { font-size: 14px; left: 15px; }
+	#title { padding-bottom: 6px; }
+	#menu, #about, #close { top: 10px; }
+	#menu { left: 5px; }
+	select { padding: 0 5px; }
+	#about, #controls, #close { right: 10px; }
+	#info { padding: 50px 20px; }
+}
+
+
+</style>
+</head>
+<body class="small">
+
+<section id="hud">
+	<header>
+		<div id="menu">
+			<svg id="down"height="36" viewBox="0 0 24 24" width="36" xmlns="http://www.w3.org/2000/svg">
+			    <path d="M7 10l5 5 5-5z" class="svg" />
+			    <path d="M0 0h24v24H0z" fill="none"/>
+			</svg>
+			<select id="select">
+				<option value="#" selected>Random</option>
+				<option value="reddit-gifs">r/gifs</option>
+				<option value="reddit-aww">r/aww</option>
+				<option value="reddit-funny">r/funny</option>
+				<option value="reddit-woahdude">r/woahdude</option>
+				<option value="imgur">Imgur</option>
+			</select>
+		</div>
+
+		<a id="about" href="/" title="About Cyber Surfing">
+			<svg height="36" viewBox="0 0 24 24" width="36" xmlns="http://www.w3.org/2000/svg">
+				<path d="M0 0h24v24H0z" fill="none"/>
+				<path d="M11 17h2v-6h-2v6zm1-15C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zM11 9h2V7h-2v2z" class="svg" />
+			</svg>
+		</a>
+	</header>
+
+	<div id="title">
+	<% if @output[0][:type] == "i" %>
+		<a id="source-link" target="_blank" href="https://imgur.com/<%= @output[0][:id] %>">
+	<% elsif @output[0][:type] == "g" %>
+		<a id="source-link" target="_blank" href="https://gfycat.com/<%= @output[0][:id] %>">
+	<% else %>
+		<a id="source-link" target="_blank" href="#">
+	<% end %>
+			<%= @output[0][:title] %>
+		</a>
+	</div>
+
+	<div id="controls">
+		<a id="next-link" href="#" title="Next">
+			<svg height="36" viewBox="0 0 24 24" width="36" xmlns="http://www.w3.org/2000/svg">
+				<path d="M4 18l8.5-6L4 6v12zm9-12v12l8.5-6L13 6z" class="svg">/>
+				<path d="M0 0h24v24H0z" fill="none"/>
+			</svg>
+		</a>
+	</div>
+
+	<div id="info">
+		<a href="#" id="close">
+			<svg height="36" viewBox="0 0 24 24" width="36" xmlns="http://www.w3.org/2000/svg">
+				<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" class="svg"/>
+				<path d="M0 0h24v24H0z" fill="none"/>
+			</svg>
+		</a>
+		<h1><span class="cyan">cyber.surf</span> is the the best way to mindlessly click through the gifs from the front pages of reddit and imgur.</h1>
+
+		<h4>Keyboard Shortcuts</h4>
+		<dl>
+			<dt>Next video</dt>     <dd><span class="mono">→</span> or <span class="mono">J</span></dd>
+			<dt>Previous video</dt> <dd><span class="mono">←</span> or <span class="mono">K</span></dd>
+			<dt>Pause</dt>          <dd><span class="mono">space</span></dd>
+			<dt>Faster</dt>         <dd><span class="mono">F</span></dd>
+			<dt>Slower</dt>         <dd><span class="mono">S</span></dd>
+			<dt>Default speed</dt>  <dd><span class="mono">D</span></dd>
+			<dt>Zoom</dt>           <dd><span class="mono">Z</span></dd>
+			<dt>Menu</dt>           <dd><span class="mono">M</span></dd>
+		</dl>
+
+		<p>Created by <a href="https://twitter.com/abnormcore">Abram Kash</a> using, <a href="https://www.reddit.com/dev/api">reddit</a>, <a href="https://api.imgur.com/">imgur</a>, and <a href="https://gfycat.com/api">gfycat</a> apis.</p>
+	</div>
+</section>
+
+<div id="video-container">
+	<video id="video" preload="auto" autoplay loop webkit-playsinline poster="<%= @output[0][:thumbnail] %>">
+		<source id="webm-source" src="<%= @output[0][:webm] %>" type="video/webm"/>
+		<source id="mp4-source"  src="<%= @output[0][:mp4] %>"  type="video/mp4"/>
+	</video>
+</div>
+
+<script>
+"use strict"
+
+var dead = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKEAAABRAQMAAACADVTsAAAABlBMVEUiIiL///9ehyAxAAABrElEQVR4Xu3QL2/bQBgG8NdRlrnMNqxu1eVAahCQVAEF03STbsuBSFVZYEBBoJ2RjZ0Hljuy6IZaUlUlpfsKRUmZP4JTNJixkEm7nJu/Mxlot0l7JJOfXj06P/D3xvkBQH/lqoEC7WVvzqM0k/f4+Gat2nt7ppqeCjCbiJX6HmN7vnca4LLc0BljH/yZ0ZejDQXGlA9GmYSthoumVw1wZ6PByxjrpxmeZq0hbMcDXPCHGVB4hHCAkgUKrrNSulawelPRCH37mu4fR1EdZYPwnTA6UZoQfteoMSmPCFVcgYmUmmCuPMKkIAtNFjqS+hWyOo+MzmVsb12NS1aFazThe1Ztr2qYBklWvcPKCKG+TA/MGwjqDcI4n1Pko+1E5KM9TRz75fGB0qWv1Vlq/Bo9Gzqo3oqu7g991G1bVQmp8IQcdeRtEGpyxoVVB5eNLob0qS6xpaJc5+J7Wx+wkwct5SoSn2vCOORKrHZk0lC69tAbm4a2g0grEuknvd9tb61XhqK8hz+d/xG/cft5fD0dvxA7qsLrj+EXWqBugRbeHl6qcbCr4Ba+7Tn88/kJk4CIztd1IrIAAAAASUVORK5CYII="
+
+var body   = document.querySelector("body")
+var title  = document.querySelector("title")
+var container = document.getElementById("video-container")
+var video  = document.getElementById("video")
+var webm   = document.getElementById("webm-source")
+var mp4    = document.getElementById("mp4-source")
+var source = document.getElementById("source-link")
+var next   = document.getElementById("next-link")
+var menu   = document.getElementById("menu")
+var select = document.getElementById("select")
+var about  = document.getElementById("about")
+var close  = document.getElementById("close")
+var info   = document.getElementById("info")
+
+// Thumbnail size toggles
+if (localStorage.getItem("video-size") === null) {
+	localStorage.setItem("video-size", "small")
+}
+if (localStorage.getItem("video-size") === "large") {
+	maximize()
+}
+function minimize() {
+	body.className = "small"
+	localStorage.setItem("video-size", "small")
+}
+function maximize() {
+	body.className = "large"
+	localStorage.setItem("video-size", "large")
+}
+
+// Content
+var videos = <%= @output.to_json %>
+var current = videos[0]
+var index = 0
+var after = "<%= @after %>"
+var selected = "<%= @selected %>"
+
+if (selected !== "") {
+	menu.querySelector("option[value='"+ selected +"']").selected = true
+}
+menu.style.display = "block"
+
+
+// Request json
+function request(method, url) {
+	return new Promise(function (resolve, reject) {
+		var xhr = new XMLHttpRequest()
+		xhr.open(method, url)
+		xhr.onload = resolve
+		xhr.onerror = reject
+		xhr.send()
+	})
+}
+
+function base64Image(url, callback) {
+    var xhr = new XMLHttpRequest()
+    xhr.responseType = "blob"
+    xhr.onload = function() {
+        var reader = new FileReader()
+        reader.onloadend = function() {
+            callback(reader.result)
+        }
+        reader.readAsDataURL(xhr.response)
+    }
+    xhr.open("GET", url)
+    xhr.send()
+}
+
+next.addEventListener("click", function(event){
+	event.preventDefault()
+	get(event)
+})
+
+function get(event) {
+	index += 1
+	if (index === videos.length) {
+		request('GET', "/get.json" + after)
+			.then(function (event) {
+				var response = JSON.parse(event.target.response)
+				if (response.status === "ok") {
+					// Make some room
+					videos  = videos.slice(-Math.round(videos.length * 0.5))
+					index   = videos.length
+					videos  = videos.concat(response.data)
+					current = videos[index]
+					
+					nextVideo(current)
+					
+					history.pushState(current, null, "/" + current.type + "/" + current.id)
+					
+					if (response.hasOwnProperty("after")) {
+						after = response.after	
+					}
+				} else {
+					window.location.href = "/"
+				}
+			}, function (event) {
+				// backup plan
+				window.location.href = "/"
+			})
+	} else {
+		current = videos[index]
+		nextVideo(current)
+		history.pushState(current, null, "/" + current.type + "/" + current.id)
+	}
+}
+
+function nextVideo(current) {
+	video.pause()
+
+	// Sometimes gifs 404 for no reason
+	// This lets us skip them
+	base64Image(current.thumbnail, function(image) {
+		if (image === dead) {
+			get()
+		}
+	})
+
+	video.setAttribute("poster", current.thumbnail)
+
+	webm.setAttribute("src", current.webm)
+	mp4.setAttribute("src", current.mp4)
+	
+	video.load()
+	video.play()
+
+	if (current.title === null) {
+		current.title = "Untitled"
+	}
+
+	title.innerHTML = current.title
+	source.innerHTML = current.title
+
+	if (current.type === "i") {
+		source.setAttribute("href", "https://imgur.com/" + current.id)
+	} 
+	else if (current.type === "g") {
+		source.setAttribute("href", "https://gfycat.com/" + current.id)
+	}
+
+	container.style.backgroundColor = "transparent"
+
+	if (after === "") {
+		menu.querySelector("option[value='#']").selected = true
+	}
+}
+
+
+window.addEventListener("popstate", function(event){
+	if (event.state !== null) {
+		var currentState = event.state
+		nextVideo(currentState)
+	}
+})
+history.pushState(current, null, "/<%= @output[0][:type] %>/<%= @output[0][:id] %>")
+
+// Keyboard shortcuts
+document.addEventListener("keydown", function(event){
+	// Next → or J
+	if (event.keyCode === 39 || event.which === 39 || event.keyCode === 74 || event.which === 74) {
+		get(event)
+	}
+	// Previous ← or K
+	else if (event.keyCode === 37 || event.which === 37 || event.keyCode === 75 || event.which === 75) {
+		index -= 1
+		window.history.back()
+	}
+	// Zoom Z
+	else if (event.keyCode === 90 || event.which === 90) {
+		if (localStorage.getItem("video-size") === "small") {
+			maximize()
+		}
+		else if (localStorage.getItem("video-size") === "large") {
+			minimize()
+		}
+	}
+	// Faster F
+	else if (event.keyCode === 70 || event.which === 70) {
+		video.playbackRate += 0.125
+	}
+	// Slower S
+	else if (event.keyCode === 83 || event.which === 83) {
+		video.playbackRate -= 0.125
+	}
+	// Default D
+	else if (event.keyCode === 68 || event.which === 68) {
+		video.playbackRate = 1.0
+	}
+	// Pause
+	else if (event.keyCode === 32 || event.which === 32) {
+		if (video.paused) {
+			video.play()
+		} else {
+			video.pause()
+		}
+	}
+	// Menu
+	else if (event.keyCode === 77 || event.which === 77) {
+		if (document.activeElement === select) {
+			select.blur()
+		} else {
+			select.focus()
+		}
+	}
+})
+
+video.addEventListener("timeupdate", function(event){
+	container.style.backgroundColor = "black"
+})
+
+video.addEventListener("click", function(event){
+	if (video.paused) {
+		video.play()
+	} else {
+		video.pause()
+	}
+})
+
+menu.addEventListener("change", function(event){
+	window.location.href = "/" + event.target.value
+})
+
+about.addEventListener("click", function(event){
+	event.preventDefault()
+	info.style.display = "block"
+})
+
+close.addEventListener("click", function(event){
+	event.preventDefault()
+	info.style.display = "none"
+})
+
+</script>
+</body>
+</html>
