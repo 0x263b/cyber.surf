@@ -35,9 +35,9 @@ helpers do
     end
 
     data = get_api(url, type)
-    File.open(file_path, "w") { |file| file.write(data.to_json) }
+    File.open(file_path, "w") { |file| file.write(data) }
 
-    return data
+    return JSON.parse(data, {:symbolize_names => true}) 
   end
 
   def get_api(url, type)
@@ -47,7 +47,7 @@ helpers do
       doc = open(url).read
     end
 
-    return JSON.parse(doc, {:symbolize_names => true})  
+    return doc
   end
 
   def save(key, value)
