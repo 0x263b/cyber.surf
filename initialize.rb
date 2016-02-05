@@ -1,6 +1,5 @@
 require "daybreak"
 
-root = "#{Dir.getwd}"
 DB = Daybreak::DB.new "#{Dir.getwd}/database.db"
 
 DB["404"] = {
