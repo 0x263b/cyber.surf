@@ -12,7 +12,6 @@ configure {
   set :environment, :production
 }
 
-root = "#{Dir.getwd}"
 DB = Daybreak::DB.new "#{Dir.getwd}/database.db"
 TMP = "#{Dir.getwd}/tmp"
 
