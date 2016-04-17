@@ -23,6 +23,10 @@ helpers do
     DB.close
   end
 
+  def h(text)
+    Rack::Utils.escape_html(text)
+  end
+
   def cache_api(url, type = "any")
     file = Digest::MD5.hexdigest(url)
     file_path = File.join("", TMP, file)

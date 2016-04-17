@@ -10,7 +10,7 @@
 
 	<meta property="og:site_name"        content="Cyber Surfing" />
 	<meta property="og:url"              content="http://cyber.surf/<%= @output[0][:type] %>/<%= @output[0][:id] %>" />
-	<meta property="og:title"            content="<%= @output[0][:title] %>" />
+	<meta property="og:title"            content="<%= h @output[0][:title] %>" />
 	<meta property="og:type"             content="video.other" />
 
 	<meta property="og:image"            content="<%= @output[0][:thumbnail] %>" />
@@ -25,7 +25,7 @@
 
 	<meta name="twitter:card"            content="summary_large_image" />
 	<meta name="twitter:site"            content="@cyber_surfing" />
-	<meta name="twitter:title"           content="<%= @output[0][:title] %>" />
+	<meta name="twitter:title"           content="<%= h @output[0][:title] %>" />
 	<meta name="twitter:description"     content="Surf a sea of cyber images" />
 	<meta name="twitter:image"           content="<%= @output[0][:thumbnail] %>" />
 	<meta name="twitter:url"             content="http://cyber.surf/<%= @output[0][:type] %>/<%= @output[0][:id] %>" />
@@ -39,7 +39,7 @@ html {
 	height: 100%;
 }
 body {
-	font-family: -apple-system, "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-family: -apple-system, BlinkMacSystemFont, "Roboto", "Helvetica Neue", "Segoe UI", Helvetica, Arial, sans-serif;
 	font-size: 16px;
 	background-color: black;
 	color: white;
@@ -163,7 +163,7 @@ header {
 			box-shadow: none;
 			color: white;
 			display: block;
-			font-family: -apple-system, "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+			font-family: -apple-system, BlinkMacSystemFont, "Roboto", "Helvetica Neue", "Segoe UI", Helvetica, Arial, sans-serif;
 			font-size: 100%;
 			line-height: normal;
 			margin: 0;
@@ -378,8 +378,6 @@ header {
 <script>
 "use strict"
 
-var dead = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKEAAABRAQMAAACADVTsAAAABlBMVEUiIiL///9ehyAxAAABrElEQVR4Xu3QL2/bQBgG8NdRlrnMNqxu1eVAahCQVAEF03STbsuBSFVZYEBBoJ2RjZ0Hljuy6IZaUlUlpfsKRUmZP4JTNJixkEm7nJu/Mxlot0l7JJOfXj06P/D3xvkBQH/lqoEC7WVvzqM0k/f4+Gat2nt7ppqeCjCbiJX6HmN7vnca4LLc0BljH/yZ0ZejDQXGlA9GmYSthoumVw1wZ6PByxjrpxmeZq0hbMcDXPCHGVB4hHCAkgUKrrNSulawelPRCH37mu4fR1EdZYPwnTA6UZoQfteoMSmPCFVcgYmUmmCuPMKkIAtNFjqS+hWyOo+MzmVsb12NS1aFazThe1Ztr2qYBklWvcPKCKG+TA/MGwjqDcI4n1Pko+1E5KM9TRz75fGB0qWv1Vlq/Bo9Gzqo3oqu7g991G1bVQmp8IQcdeRtEGpyxoVVB5eNLob0qS6xpaJc5+J7Wx+wkwct5SoSn2vCOORKrHZk0lC69tAbm4a2g0grEuknvd9tb61XhqK8hz+d/xG/cft5fD0dvxA7qsLrj+EXWqBugRbeHl6qcbCr4Ba+7Tn88/kJk4CIztd1IrIAAAAASUVORK5CYII="
-
 var body   = document.querySelector("body")
 var title  = document.querySelector("title")
 var container = document.getElementById("video-container")
@@ -434,20 +432,6 @@ function request(method, url) {
 	})
 }
 
-function base64Image(url, callback) {
-    var xhr = new XMLHttpRequest()
-    xhr.responseType = "blob"
-    xhr.onload = function() {
-        var reader = new FileReader()
-        reader.onloadend = function() {
-            callback(reader.result)
-        }
-        reader.readAsDataURL(xhr.response)
-    }
-    xhr.open("GET", url)
-    xhr.send()
-}
-
 next.addEventListener("click", function(event){
 	event.preventDefault()
 	get(event)
@@ -489,14 +473,6 @@ function get(event) {
 
 function nextVideo(current) {
 	video.pause()
-
-	// Sometimes gifs 404 for no reason
-	// This lets us skip them
-	base64Image(current.thumbnail, function(image) {
-		if (image === dead) {
-			get()
-		}
-	})
 
 	video.setAttribute("poster", current.thumbnail)
 
