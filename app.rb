@@ -59,7 +59,7 @@ helpers do
     end
   end
 
-  def gfycat_url(post_id, title = nil)
+  def gfycat_url(post_id, title = nil, permalink = nil)
     return if post_id.nil?
     post_id = post_id.downcase
     return DB[post_id] if DB.keys.include?(post_id)
@@ -73,6 +73,8 @@ helpers do
       title = post[:title] if title.nil?
       title = "Untitled" if title.nil?
 
+      permalink = "https://gfycat.com/#{post[:gfyId]}" if permalink.nil?
+
       value = {
         :type   => "g",
         :title  => title,
@@ -81,7 +83,8 @@ helpers do
         :mp4    => post[:mp4Url].gsub(/^http:\/\//, "https://"),
         :thumbnail => "https://thumbs.gfycat.com/#{post[:gfyName]}-poster.jpg",
         :width  => post[:width],
-        :height => post[:height]
+        :height => post[:height],
+        :permalink => permalink
       }
 
       save(post_id, value)
@@ -91,7 +94,7 @@ helpers do
     end
   end
 
-  def imgur_url(post_id, title = nil)
+  def imgur_url(post_id, title = nil, permalink = nil)
     return if post_id.nil?
     return DB[post_id] if DB.keys.include?(post_id)
 
@@ -107,6 +110,8 @@ helpers do
       title = post[:title] if title.nil?
       title = "Untitled" if title.nil?
 
+      permalink = "https://imgur.com/#{post[:id]}" if permalink.nil?
+
       value = {
         :type   => "i",
         :title  => title,
@@ -115,7 +120,8 @@ helpers do
         :mp4    => post[:mp4].gsub(/^http:\/\//, "https://"),
         :thumbnail => "https://i.imgur.com/#{post_id}h.jpg",
         :width  => post[:width],
-        :height => post[:height]
+        :height => post[:height],
+        :permalink => permalink
       }
 
       save(post_id, value)
@@ -143,7 +149,8 @@ helpers do
           :mp4    => post[:mp4].gsub(/^http:\/\//, "https://"),
           :thumbnail => "https://i.imgur.com/#{post[:id]}h.jpg",
           :width  => post[:width],
-          :height => post[:height]
+          :height => post[:height],
+          :permalink => "https://imgur.com/#{post[:id]}"
         }
 
         save(post[:id], value)
@@ -174,23 +181,24 @@ helpers do
         next if post[:data][:over_18] == true or post[:data][:score] < 100 
 
         title = post[:data][:title]
+        permalink = "https://redd.it/#{post[:data][:id]}"
 
         if post[:data][:domain] == "i.imgur.com"
           post_id = post[:data][:url][/https?:\/\/i\.imgur\.com\/(\w+)\.gifv?/,1]
-          image = imgur_url(post_id, title)
+          image = imgur_url(post_id, title, permalink)
 
         elsif post[:data][:domain] == "imgur.com"
           next if post[:data][:media].nil? or post[:data][:media][:oembed][:type] != "video"
           post_id = post[:data][:url][/https?:\/\/imgur\.com\/(?:gallery\/)?(\w+)/,1]
-          image = imgur_url(post_id, title)
+          image = imgur_url(post_id, title, permalink)
 
         elsif post[:data][:domain] == "gfycat.com"
           post_id = post[:data][:url][/https?:\/\/gfycat\.com\/(\w+)/,1]
-          image = gfycat_url(post_id, title)
+          image = gfycat_url(post_id, title, permalink)
 
         elsif post[:data][:domain] =~ /\w+\.gfycat\.com/
           post_id = post[:data][:url][/https?:\/\/\w+\.gfycat\.com\/(\w+)\.?\w*/,1]
-          image = gfycat_url(post_id, title)
+          image = gfycat_url(post_id, title, permalink)
 
         end
 
