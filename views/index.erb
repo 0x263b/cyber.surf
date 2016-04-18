@@ -323,13 +323,7 @@ header {
 	</header>
 
 	<div id="title">
-	<% if @output[0][:type] == "i" %>
-		<a id="source-link" target="_blank" href="https://imgur.com/<%= @output[0][:id] %>">
-	<% elsif @output[0][:type] == "g" %>
-		<a id="source-link" target="_blank" href="https://gfycat.com/<%= @output[0][:id] %>">
-	<% else %>
-		<a id="source-link" target="_blank" href="#">
-	<% end %>
+		<a id="source-link" target="_blank" href="<%= @output[0][:permalink] %>">
 			<%= @output[0][:title] %>
 		</a>
 	</div>
@@ -488,13 +482,7 @@ function nextVideo(current) {
 
 	title.innerHTML = current.title
 	source.innerHTML = current.title
-
-	if (current.type === "i") {
-		source.setAttribute("href", "https://imgur.com/" + current.id)
-	} 
-	else if (current.type === "g") {
-		source.setAttribute("href", "https://gfycat.com/" + current.id)
-	}
+	source.setAttribute("href", current.permalink)
 
 	container.style.backgroundColor = "transparent"
 
