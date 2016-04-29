@@ -30,6 +30,21 @@
 	<meta name="twitter:image"           content="<%= @output[0][:thumbnail] %>" />
 	<meta name="twitter:url"             content="http://cyber.surf/<%= @output[0][:type] %>/<%= @output[0][:id] %>" />
 
+	<!-- HTML5 Standards -->
+	<link rel="manifest" href="/manifest.json">
+	<!-- Apple specific bullshit -->
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+	<meta name="apple-mobile-web-app-title" content="Cyber Surfing">
+	<meta name="format-detection" content="telephone=no">
+
+	<link href="/icons/76.png"  sizes="76x76"   rel="apple-touch-icon-precomposed">
+	<link href="/icons/120.png" sizes="120x120" rel="apple-touch-icon-precomposed">
+	<link href="/icons/152.png" sizes="152x152" rel="apple-touch-icon-precomposed">
+	<link href="/icons/167.png" sizes="167x167" rel="apple-touch-icon-precomposed">
+	<link href="/icons/180.png" sizes="180x180" rel="apple-touch-icon-precomposed">
+
+
 <style type="text/css">
 * {
 	box-sizing: border-box;
@@ -37,6 +52,7 @@
 }
 html {
 	height: 100%;
+	-webkit-text-size-adjust: 100%;
 }
 body {
 	font-family: -apple-system, BlinkMacSystemFont, "Roboto", "Helvetica Neue", "Segoe UI", Helvetica, Arial, sans-serif;
