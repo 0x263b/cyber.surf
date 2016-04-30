@@ -1,6 +1,6 @@
 # cyber.surf
 
-![](https://raw.githubusercontent.com/0x263b/cyber.surf/master/public/icons/76.png)
+[![](https://raw.githubusercontent.com/0x263b/cyber.surf/master/public/icons/76.png)](https://cyber.surf)
 
 Built using Ruby ([Sinatra](https://github.com/sinatra/sinatra), [Puma](https://github.com/puma/puma), [Daybreak](https://github.com/propublica/daybreak)), with [Imgur](https://api.imgur.com/), [Gfycat](https://gfycat.com/api), and [Reddit](https://www.reddit.com/dev/api).
 
