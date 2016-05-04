@@ -1,6 +1,7 @@
-require "daybreak"
+require "leveldb"
+require "json"
 
-DB = Daybreak::DB.new "#{Dir.getwd}/database.db"
+DB = LevelDB::DB.new "#{Dir.getwd}/database"
 
 DB["404"] = {
   :type   => "e",
@@ -11,7 +12,4 @@ DB["404"] = {
   :thumbnail => "/404.png",
   :width  => "500",
   :height => "500"
-}
-
-DB.flush
-DB.close
+}.to_json
