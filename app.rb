@@ -4,7 +4,7 @@ require 'open-uri'
 require 'json'
 require 'tilt/erb'
 require 'date'
-require 'daybreak'
+require 'lmdb'
 require 'digest/md5'
 
 configure { 
@@ -12,24 +12,24 @@ configure {
   set :environment, :production
 }
 
-DB = Daybreak::DB.new "#{Dir.getwd}/database.db"
-TMP = "#{Dir.getwd}/tmp"
+env = LMDB.new "#{Dir.getwd}/lmdb", :mapsize => 26210000
+DB  = env.database
+CACHE = "#{Dir.getwd}/tmp"
 
 IMGUR = "Client-ID xxxxxxxxxxxxxxx"
 
 helpers do 
   at_exit do
-    DB.compact
-    DB.close
+    env.close
   end
-
+  
   def h(text)
     Rack::Utils.escape_html(text)
   end
 
   def cache_api(url, type = "any")
     file = Digest::MD5.hexdigest(url)
-    file_path = File.join("", TMP, file)
+    file_path = "#{CACHE}/#{file}.json"
     if File.exists? file_path
       if File.mtime(file_path).to_i > (Time.now.to_i / 3600) * 3600
         data = File.read(file_path)
@@ -53,16 +53,28 @@ helpers do
     return doc
   end
 
-  def save(key, value)
-    DB.synchronize do
-      DB.set!(key, value)
+  def save(post_id, value)
+    DB.put(post_id, value.to_json)
+  end
+
+  def get(post_id)
+    return JSON.parse(DB[post_id], {:symbolize_names => true})
+  end
+
+  def get_keys()
+    keys = Array.new
+    DB.each do |record|
+      key, value = record
+      keys << key
     end
+    return keys
   end
 
   def gfycat_url(post_id, title = nil, permalink = nil)
     return if post_id.nil?
     post_id = post_id.downcase
-    return DB[post_id] if DB.keys.include?(post_id)
+    return get(post_id) unless DB[post_id].nil?
+
     begin
       url = "https://gfycat.com/cajax/get/#{post_id}"
       doc = open(url).read
@@ -88,7 +100,7 @@ helpers do
       }
 
       save(post_id, value)
-      return DB[post_id]
+      return get(post_id)
     rescue
       return nil
     end
@@ -96,7 +108,7 @@ helpers do
 
   def imgur_url(post_id, title = nil, permalink = nil)
     return if post_id.nil?
-    return DB[post_id] if DB.keys.include?(post_id)
+    return get(post_id) unless DB[post_id].nil?
 
     url = "https://api.imgur.com/3/image/#{post_id}"
     begin
@@ -125,7 +137,7 @@ helpers do
       }
 
       save(post_id, value)
-      return DB[post_id]
+      return get(post_id)
     rescue
       return nil
     end
@@ -153,7 +165,7 @@ helpers do
           :permalink => "https://imgur.com/#{post[:id]}"
         }
 
-        save(post[:id], value)
+        save(post[:id], value) if DB[post[:id]].nil?
         images << value
       end
 
@@ -216,10 +228,10 @@ helpers do
   end
 
   def random_gifs()
-    keys = DB.keys.sample(24)
+    keys = get_keys.sample(24)
     gifs = Array.new
     keys.each do |key|
-      gifs << DB[key]
+      gifs << get(key)
     end
     return gifs
   end
@@ -280,7 +292,7 @@ end
 get "/i/:image" do
   begin
     post_id = params[:image]
-    data = Array.new(1, DB[post_id])
+    data = Array.new(1, get(post_id))
     data << random_gifs
     data.flatten!
 
@@ -297,7 +309,7 @@ end
 get "/g/:image" do
   begin
     post_id = params[:image].downcase
-    data = Array.new(1, DB[post_id])
+    data = Array.new(1, get(post_id))
     data << random_gifs
     data.flatten!
 
@@ -312,7 +324,7 @@ end
 
 # Error handling
 not_found do
-  data = Array.new(1, DB["404"])
+  data = Array.new(1, get("404"))
   data << random_gifs
   data.flatten!
 
