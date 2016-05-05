@@ -1,7 +1,8 @@
-require "leveldb"
+# encoding: utf-8
+require "leveldb-native"
 require "json"
 
-DB = LevelDB::DB.new "#{Dir.getwd}/database"
+DB = LevelDBNative::DB.new "#{Dir.getwd}/database"
 
 DB["404"] = {
   :type   => "e",

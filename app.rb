@@ -4,7 +4,7 @@ require 'open-uri'
 require 'json'
 require 'tilt/erb'
 require 'date'
-require 'leveldb'
+require 'leveldb-native'
 require 'digest/md5'
 
 configure { 
@@ -12,7 +12,7 @@ configure {
   set :environment, :production
 }
 
-DB = LevelDB::DB.new "#{Dir.getwd}/database"
+DB = LevelDBNative::DB.new "#{Dir.getwd}/database"
 CACHE = "#{Dir.getwd}/tmp"
 
 IMGUR = "Client-ID xxxxxxxxxxxxxxx"
@@ -53,7 +53,7 @@ helpers do
   end
 
   def get(post_id)
-    return JSON.parse(DB.get(post_id), {:symbolize_names => true})
+    return JSON.parse(DB[post_id], {:symbolize_names => true})
   end
 
   def gfycat_url(post_id, title = nil, permalink = nil)
