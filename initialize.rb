@@ -1,8 +1,10 @@
-require "daybreak"
+require "lmdb"
+require "json"
 
-DB = Daybreak::DB.new "#{Dir.getwd}/database.db"
+env = LMDB.new "#{Dir.getwd}/lmdb", :mapsize => 26210000
+DB  = env.database
 
-DB["404"] = {
+error_404 = {
   :type   => "e",
   :title  => "Not Found",
   :id     => "404",
@@ -13,5 +15,6 @@ DB["404"] = {
   :height => "500"
 }
 
-DB.flush
-DB.close
+DB.put(post_id, error_404.to_json)
+
+env.close

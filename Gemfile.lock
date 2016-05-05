@@ -1,7 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    daybreak (0.3.0)
+    lmdb (0.4.8)
     puma (2.15.3)
     rack (1.6.4)
     rack-protection (1.5.3)
@@ -16,7 +16,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  daybreak
+  lmdb
   puma
   sinatra
 
