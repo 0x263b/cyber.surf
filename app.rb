@@ -20,6 +20,7 @@ IMGUR = "Client-ID xxxxxxxxxxxxxxx"
 
 helpers do 
   at_exit do
+    env.sync
     env.close
   end
   
