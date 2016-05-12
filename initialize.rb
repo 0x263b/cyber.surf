@@ -1,7 +1,7 @@
 require "lmdb"
 require "json"
 
-env = LMDB.new "#{Dir.getwd}/lmdb", :mapsize => 26210000
+env = LMDB.new "#{Dir.getwd}/database", :mapsize => 26210000
 DB  = env.database
 
 error_404 = {
