@@ -1,6 +1,6 @@
 require "sinatra"
 configure do
-	set :imgur, "xxxxxxxxxxxxxxx"
+  set :imgur, "xxxxxxxxxxxxxxx"
 end
 
 require "./app"
