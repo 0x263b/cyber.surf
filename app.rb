@@ -16,7 +16,7 @@ env = LMDB.new "#{Dir.getwd}/lmdb", :mapsize => 26210000
 DB  = env.database
 CACHE = "#{Dir.getwd}/tmp"
 
-IMGUR = "Client-ID xxxxxxxxxxxxxxx"
+IMGUR = "Client-ID #{settings.imgur}"
 
 helpers do 
   at_exit do
