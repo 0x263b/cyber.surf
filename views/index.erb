@@ -6,10 +6,11 @@
 	<title><%= @output[0][:title] %></title>
 	<meta name="theme-color" content="#000">
 
-	<link rel="canonical"                href="http://cyber.surf/<%= @output[0][:type] %>/<%= @output[0][:id] %>" />
+	<link rel="canonical"                href="https://cyber.surf/<%= @output[0][:type] %>/<%= @output[0][:id] %>" />
+	<link type="text/plain" rel="author" href="https://cyber.surf/humans.txt" />
 
-	<meta property="og:site_name"        content="Cyber Surfing" />
-	<meta property="og:url"              content="http://cyber.surf/<%= @output[0][:type] %>/<%= @output[0][:id] %>" />
+	<meta property="og:site_name"        content="cyber.surf" />
+	<meta property="og:url"              content="https://cyber.surf/<%= @output[0][:type] %>/<%= @output[0][:id] %>" />
 	<meta property="og:title"            content="<%= h @output[0][:title] %>" />
 	<meta property="og:type"             content="video.other" />
 
@@ -28,14 +29,14 @@
 	<meta name="twitter:title"           content="<%= h @output[0][:title] %>" />
 	<meta name="twitter:description"     content="Surf a sea of cyber images" />
 	<meta name="twitter:image"           content="<%= @output[0][:thumbnail] %>" />
-	<meta name="twitter:url"             content="http://cyber.surf/<%= @output[0][:type] %>/<%= @output[0][:id] %>" />
+	<meta name="twitter:url"             content="https://cyber.surf/<%= @output[0][:type] %>/<%= @output[0][:id] %>" />
 
 	<!-- HTML5 Standards -->
 	<link rel="manifest" href="/manifest.json">
 	<!-- Apple specific bullshit -->
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-	<meta name="apple-mobile-web-app-title" content="Cyber Surfing">
+	<meta name="apple-mobile-web-app-title" content="cyber.surf">
 	<meta name="format-detection" content="telephone=no">
 
 	<link href="/icons/76.png"  sizes="76x76"   rel="apple-touch-icon-precomposed">
@@ -257,7 +258,7 @@ header {
 	padding: 60px 40px;
 	overflow-y: scroll;
 }
-	#close {
+	#close, #share-close {
 		position: fixed;
 		top: 15px;
 		right: 20px;
@@ -298,13 +299,54 @@ header {
 			line-height: 1.4;
 		}
 
+#share {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	background-color: black;
+	z-index: 5;
+	padding: 17px 20px;
+	display: none;
+}
+	.box {
+		max-width: calc(100% - 36px);
+		display: flex;
+		flex-direction: row;
+	}
+	.cell:first-child {
+		flex-grow: 1;
+	}
+	.cell:nth-child(2) {
+		padding: 0 5px;
+	}
+	#share-url {
+		font-size: 18px;
+		background-color: black;
+		border: 1px solid #555;
+		border-radius: 3px;
+		color: #fff;
+		line-height: 30px;
+		padding: 0 10px;
+		width: 100%;
+	}
+	#share-button {
+		background-color: #50E3C2;
+		border: 1px solid #50E3C2;
+		line-height: 30px;
+		font-size: 18px;
+		padding: 0 10px;
+		color: black;
+		border-radius: 3px;
+	}
+
 @media (max-width: 768px) {
 	body { font-size: 14px; left: 15px; }
 	#title { padding-bottom: 6px; }
-	#menu, #about, #close { top: 10px; }
+	#menu, #about, #close, #share-close { top: 10px; }
 	#menu { left: 5px; }
 	select { padding: 0 5px; }
-	#about, #controls, #close { right: 10px; }
+	#about, #controls, #close, #share-close { right: 10px; }
 	#info { padding: 50px 20px; }
 }
 
@@ -330,7 +372,7 @@ header {
 			</select>
 		</div>
 
-		<a id="about" href="/" title="About Cyber Surfing">
+		<a id="about" href="/" title="About cyber.surf">
 			<svg height="36" viewBox="0 0 24 24" width="36" xmlns="http://www.w3.org/2000/svg">
 				<path d="M0 0h24v24H0z" fill="none"/>
 				<path d="M11 17h2v-6h-2v6zm1-15C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zM11 9h2V7h-2v2z" class="svg" />
@@ -339,7 +381,7 @@ header {
 	</header>
 
 	<div id="title">
-		<a id="source-link" target="_blank" rel="noreferrer" href="<%= @output[0][:permalink] %>">
+		<a id="source-link" target="_blank" rel="noopener noreferrer" href="<%= @output[0][:permalink] %>">
 			<%= @output[0][:title] %>
 		</a>
 	</div>
@@ -376,6 +418,18 @@ header {
 
 		<p>Created by <a href="https://twitter.com/abnormcore">Abram Kash</a> using, <a href="https://www.reddit.com/dev/api">reddit</a>, <a href="https://api.imgur.com/">imgur</a>, and <a href="https://gfycat.com/api">gfycat</a> apis.</p>
 	</div>
+	<div id="share">
+		<a href="#" id="share-close">
+			<svg height="36" viewBox="0 0 24 24" width="36" xmlns="http://www.w3.org/2000/svg">
+				<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" class="svg"/>
+				<path d="M0 0h24v24H0z" fill="none"/>
+			</svg>
+		</a>
+		<div class="box">
+			<div class="cell"><input id="share-url" type="text" readonly value="https://cyber.surf/<%= @output[0][:type] %>/<%= @output[0][:id] %>"></div>
+			<div class="cell"><button id="share-button">Copy</button></div>
+		</div>
+	</div>
 </section>
 
 <div id="video-container">
@@ -388,19 +442,28 @@ header {
 <script>
 "use strict"
 
-var body   = document.querySelector("body")
-var title  = document.querySelector("title")
-var container = document.getElementById("video-container")
-var video  = document.getElementById("video")
-var webm   = document.getElementById("webm-source")
-var mp4    = document.getElementById("mp4-source")
-var source = document.getElementById("source-link")
-var next   = document.getElementById("next-link")
-var menu   = document.getElementById("menu")
-var select = document.getElementById("select")
-var about  = document.getElementById("about")
-var close  = document.getElementById("close")
-var info   = document.getElementById("info")
+function qs(selector) {
+	return document.querySelector(selector)
+}
+
+var body   = qs("body")
+var title  = qs("title")
+var container = qs("#video-container")
+var video  = qs("#video")
+var webm   = qs("#webm-source")
+var mp4    = qs("#mp4-source")
+var source = qs("#source-link")
+var next   = qs("#next-link")
+var menu   = qs("#menu")
+var select = qs("#select")
+var about  = qs("#about")
+var close  = qs("#close")
+var info   = qs("#info")
+var share  = qs("#share")
+var share_button = qs("#share-button")
+var share_url = qs("#share-url")
+var share_close = qs("#share-close")
+
 
 // Thumbnail size toggles
 if (localStorage.getItem("video-size") === null) {
@@ -499,6 +562,7 @@ function nextVideo(current) {
 	title.innerHTML = current.title
 	source.innerHTML = current.title
 	source.setAttribute("href", current.permalink)
+	share_url.setAttribute("value", "https://cyber.surf/" + current.type + "/" + current.id)
 
 	container.style.backgroundColor = "transparent"
 
@@ -582,14 +646,29 @@ menu.addEventListener("change", function(event){
 	window.location.href = "/" + event.target.value
 })
 
+share_button.addEventListener("click", function(event){
+	share_url.select()
+	document.execCommand('copy')
+	share_url.blur()
+})
+
 about.addEventListener("click", function(event){
 	event.preventDefault()
-	info.style.display = "block"
+	if ("standalone" in window.navigator || window.matchMedia('(display-mode: standalone)').matches) {
+		share.style.display = "block"
+	} else {
+		info.style.display = "block"
+	}
 })
 
 close.addEventListener("click", function(event){
 	event.preventDefault()
 	info.style.display = "none"
+})
+
+share_close.addEventListener("click", function(event){
+	event.preventDefault()
+	share.style.display = "none"
 })
 
 </script>
