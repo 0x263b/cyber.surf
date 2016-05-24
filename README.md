@@ -8,6 +8,9 @@ Gif info is stored in a LMDB database, and API calls are stored as plaintext on 
 
 #### Testing locally
 
-First, get an [imgur API Client ID](https://api.imgur.com/oauth2/addclient). 
-
-Clone the repo, and `bundle install` the dependencies. Edit `config.ru` with your Client ID. Run [initialize.rb](initialize.rb) to build the database, then `rackup` to run the server.
+* Get an [imgur API Client ID](https://api.imgur.com/oauth2/addclient)
+* Clone and cd into the repo, 
+* `bundle install` the dependencies
+* Edit `config.ru` and add your Client ID
+* Run [initialize.rb](initialize.rb) to build the database
+* `rackup` to run the server.
