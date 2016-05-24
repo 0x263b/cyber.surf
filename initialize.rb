@@ -15,6 +15,6 @@ error_404 = {
   :height => "500"
 }
 
-DB.put(post_id, error_404.to_json)
+DB.put("404", error_404.to_json)
 
 env.close
