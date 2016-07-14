@@ -9,11 +9,11 @@
 	<link rel="canonical"                href="https://cyber.surf/<%= @output[0][:type] %>/<%= @output[0][:id] %>" />
 	<link type="text/plain" rel="author" href="https://cyber.surf/humans.txt" />
 
+	<!-- Open Graph -->
 	<meta property="og:site_name"        content="cyber.surf" />
 	<meta property="og:url"              content="https://cyber.surf/<%= @output[0][:type] %>/<%= @output[0][:id] %>" />
 	<meta property="og:title"            content="<%= h @output[0][:title] %>" />
 	<meta property="og:type"             content="video.other" />
-
 	<meta property="og:image"            content="<%= @output[0][:thumbnail] %>" />
 	<meta property="og:image:width"      content="<%= @output[0][:width] %>" />
 	<meta property="og:image:height"     content="<%= @output[0][:height] %>" />
@@ -23,13 +23,17 @@
 	<meta property="og:video:type"       content="video/mp4" />
 	<meta property="og:video:width"      content="<%= @output[0][:width] %>" />
 	<meta property="og:video:height"     content="<%= @output[0][:height] %>" />
-
-	<meta name="twitter:card"            content="summary_large_image" />
-	<meta name="twitter:site"            content="@cyber_surfing" />
+	<!-- Twitter Card -->
+	<meta name="twitter:card"            content="player" />
+	<meta name="twitter:site"            content="@cybersurf_" />
 	<meta name="twitter:title"           content="<%= h @output[0][:title] %>" />
 	<meta name="twitter:description"     content="Surf a sea of cyber images" />
 	<meta name="twitter:image"           content="<%= @output[0][:thumbnail] %>" />
-	<meta name="twitter:url"             content="https://cyber.surf/<%= @output[0][:type] %>/<%= @output[0][:id] %>" />
+	<meta name="twitter:player"          content="https://cyber.surf/<%= @output[0][:type] %>/<%= @output[0][:id] %>?twitter" />
+	<meta name="twitter:player:width"    content="<%= @output[0][:width] %>" />
+	<meta name="twitter:player:height"   content="<%= @output[0][:height] %>" />
+	<meta name="twitter:player:stream"   content="<%= @output[0][:mp4] %>" />
+	<meta name="twitter:player:stream:content_type" content="video/mp4">
 
 	<!-- HTML5 Standards -->
 	<link rel="manifest" href="/manifest.json">
@@ -416,7 +420,7 @@ header {
 			<dt>Menu</dt>           <dd><span class="mono">M</span></dd>
 		</dl>
 
-		<p>Created by <a href="https://twitter.com/abnormcore">Abram Kash</a> using, <a href="https://www.reddit.com/dev/api">reddit</a>, <a href="https://api.imgur.com/">imgur</a>, and <a href="https://gfycat.com/api">gfycat</a> apis.</p>
+		<p>Created by <a href="https://kash.im/">Abram Kash</a>, with content from, <a href="https://www.reddit.com/dev/api">reddit</a>, <a href="https://api.imgur.com/">imgur</a>, and <a href="https://gfycat.com/api">gfycat</a>.</p>
 	</div>
 	<div id="share">
 		<a href="#" id="share-close">

@@ -9,6 +9,7 @@ require 'digest/md5'
 
 configure { 
   set :server, :puma
+  set :protection, :except => :frame_options
   set :environment, :production
 }
 
@@ -16,6 +17,45 @@ env = LMDB.new "#{Dir.getwd}/database", :mapsize => 26210000
 DB  = env.database
 CACHE = "#{Dir.getwd}/tmp"
 IMGUR = "Client-ID #{settings.imgur}"
+
+class Array
+  # Has a similar API like #shuffle, but uses SecureRandom
+  # Delegates to original #shuffle if a Hash argument is given
+  def secure_shuffle(o={})
+    raise ArgumentError, 'wrong number of arguments (1 for 0)' unless o.is_a?(Hash)
+    if random = o[:random]
+      shuffle(random: random)
+    else
+       old = dup
+      [*1..size].reverse_each.with_object([]){ |i, res|
+        res << old.delete_at(SecureRandom.random_number(i))
+      }
+    end
+  end
+  # Has a similar API like #sample, but uses SecureRandom
+  # Delegates to original #sample if a Hash argument is given
+  def secure_sample(n=:single, o={})
+    o, n = n, :single if n.is_a?(Hash)
+    raise ArgumentError, 'wrong number of arguments (2 for 1)' unless o.is_a?(Hash)
+    if random = o[:random]
+      args = [{random: random}]
+      args.unshift(n) unless n == :single
+      sample(*args)
+    else
+      if n == :single
+        self[SecureRandom.random_number(size)]
+      else
+        raise ArgumentError, 'negative sample number' if n < 0
+        res = []
+        old = dup
+        n = size if n > size
+        [*(size-n+1)..size].reverse_each.with_object([]){ |i, res|
+          res << old.delete_at(SecureRandom.random_number(i))
+        }
+      end
+    end
+  end
+end
 
 helpers do 
   at_exit do
@@ -58,16 +98,22 @@ helpers do
   end
 
   def get(post_id)
+    return nil if DB[post_id].empty?
     return JSON.parse(DB[post_id], {:symbolize_names => true})
+  end
+
+  def delete(post_id)
+    DB.put(post_id, "")
   end
 
   def get_keys()
     keys = Array.new
     DB.each do |record|
       key, value = record
+      next if value.empty?
       keys << key
     end
-    return keys
+    return keys.secure_shuffle
   end
 
   def gfycat_url(post_id, title = nil, permalink = nil)
@@ -124,12 +170,15 @@ helpers do
 
       permalink = "https://imgur.com/#{post[:id]}" if permalink.nil?
 
+      webm = post[:webm].gsub(/^http:\/\//, "https://") rescue nil
+      mp4  = post[:mp4].gsub(/^http:\/\//, "https://") 
+
       value = {
         :type   => "i",
         :title  => title,
         :id     => post[:id],
-        :webm   => post[:webm].gsub(/^http:\/\//, "https://"),
-        :mp4    => post[:mp4].gsub(/^http:\/\//, "https://"),
+        :webm   => webm,
+        :mp4    => mp4,
         :thumbnail => "https://i.imgur.com/#{post_id}h.jpg",
         :width  => post[:width],
         :height => post[:height],
@@ -152,13 +201,17 @@ helpers do
 
       posts.each do |post|
         next if post[:nsfw] == true or post[:animated] == false or post[:is_album] == true
+        next if REJECT_PILE.any? { |word| post[:title] =~ /#{word}/i }
+
+        webm = post[:webm].gsub(/^http:\/\//, "https://") rescue nil
+        mp4  = post[:mp4].gsub(/^http:\/\//, "https://")
 
         value = {
           :type   => "i",
           :title  => post[:title],
           :id     => post[:id],
-          :webm   => post[:webm].gsub(/^http:\/\//, "https://"),
-          :mp4    => post[:mp4].gsub(/^http:\/\//, "https://"),
+          :webm   => webm,
+          :mp4    => mp4,
           :thumbnail => "https://i.imgur.com/#{post[:id]}h.jpg",
           :width  => post[:width],
           :height => post[:height],
@@ -200,7 +253,7 @@ helpers do
           image = imgur_url(post_id, title, permalink)
 
         elsif post[:data][:domain] == "imgur.com"
-          next if post[:data][:media].nil? or post[:data][:media][:oembed][:type] != "video"
+          # next if post[:data][:media].nil? or post[:data][:media][:oembed][:type] != "video"
           post_id = post[:data][:url][/https?:\/\/imgur\.com\/(?:gallery\/)?(\w+)/,1]
           image = imgur_url(post_id, title, permalink)
 
@@ -228,7 +281,7 @@ helpers do
   end
 
   def random_gifs()
-    keys = get_keys.sample(24)
+    keys = get_keys.secure_sample(24)
     gifs = Array.new
     keys.each do |key|
       gifs << get(key)
@@ -299,7 +352,12 @@ get "/i/:image" do
     @output = data
     @after = ""
     @selected = "#"
-    erb :index
+
+    if params.has_key?("twitter")
+      erb :twitter
+    else
+      erb :index
+    end
   rescue
     404
   end
@@ -316,7 +374,12 @@ get "/g/:image" do
     @output = data
     @after = ""
     @selected = "#"
-    erb :index
+    
+    if params.has_key?("twitter")
+      erb :twitter
+    else
+      erb :index
+    end
   rescue
     404
   end

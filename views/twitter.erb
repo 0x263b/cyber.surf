@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+	<title><%= @output[0][:title] %></title>
+	<meta name="theme-color" content="#000">
+
+	<link rel="canonical"                href="https://cyber.surf/<%= @output[0][:type] %>/<%= @output[0][:id] %>" />
+	<link type="text/plain" rel="author" href="https://cyber.surf/humans.txt" />
+
+	<!-- Open Graph -->
+	<meta property="og:site_name"        content="cyber.surf" />
+	<meta property="og:url"              content="https://cyber.surf/<%= @output[0][:type] %>/<%= @output[0][:id] %>" />
+	<meta property="og:title"            content="<%= h @output[0][:title] %>" />
+	<meta property="og:type"             content="video.other" />
+	<meta property="og:image"            content="<%= @output[0][:thumbnail] %>" />
+	<meta property="og:image:width"      content="<%= @output[0][:width] %>" />
+	<meta property="og:image:height"     content="<%= @output[0][:height] %>" />
+	<meta property="og:description"      content="Surf a sea of cyber images" />
+	<meta property="og:video"            content="<%= @output[0][:mp4] %>" />
+	<meta property="og:video:secure_url" content="<%= @output[0][:mp4] %>" />
+	<meta property="og:video:type"       content="video/mp4" />
+	<meta property="og:video:width"      content="<%= @output[0][:width] %>" />
+	<meta property="og:video:height"     content="<%= @output[0][:height] %>" />
+	<!-- Twitter Card -->
+	<meta name="twitter:card"            content="player" />
+	<meta name="twitter:site"            content="@cybersurf_" />
+	<meta name="twitter:title"           content="<%= h @output[0][:title] %>" />
+	<meta name="twitter:description"     content="Surf a sea of cyber images" />
+	<meta name="twitter:image"           content="<%= @output[0][:thumbnail] %>" />
+	<meta name="twitter:player"          content="https://cyber.surf/<%= @output[0][:type] %>/<%= @output[0][:id] %>?twitter" />
+	<meta name="twitter:player:width"    content="<%= @output[0][:width] %>" />
+	<meta name="twitter:player:height"   content="<%= @output[0][:height] %>" />
+	<meta name="twitter:player:stream"   content="<%= @output[0][:mp4] %>" />
+	<meta name="twitter:player:stream:content_type" content="video/mp4">
+
+	<!-- HTML5 Standards -->
+	<link rel="manifest" href="/manifest.json">
+	<!-- Apple specific bullshit -->
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+	<meta name="apple-mobile-web-app-title" content="cyber.surf">
+	<meta name="format-detection" content="telephone=no">
+
+	<link href="/icons/76.png"  sizes="76x76"   rel="apple-touch-icon-precomposed">
+	<link href="/icons/120.png" sizes="120x120" rel="apple-touch-icon-precomposed">
+	<link href="/icons/152.png" sizes="152x152" rel="apple-touch-icon-precomposed">
+	<link href="/icons/167.png" sizes="167x167" rel="apple-touch-icon-precomposed">
+	<link href="/icons/180.png" sizes="180x180" rel="apple-touch-icon-precomposed">
+
+
+<style type="text/css">
+* {
+	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
+html {
+	height: 100%;
+	-webkit-text-size-adjust: 100%;
+}
+body {
+	font-family: -apple-system, BlinkMacSystemFont, "Roboto", "Helvetica Neue", "Segoe UI", Helvetica, Arial, sans-serif;
+	font-size: 16px;
+	background-color: black;
+	color: white;
+	height: 100%;
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+#video-container {
+	position: relative;
+	background-size: cover;
+	background-position: 50% 50%;
+	height: 100vh;
+	z-index: 0;
+}
+	.large video {
+		transform: translate(-50%, -50%);
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		min-width: 100%;
+		min-height: 100%;
+		width: auto;
+		height: auto;
+		z-index: -100;
+	}
+	.small video {
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		margin: auto;
+		max-width: 100%;
+		max-height: 100%;
+		-moz-user-select: none;
+	}
+	video:focus {
+		border: none;
+		outline: none;
+	}
+
+</style>
+</head>
+<body class="small">
+
+<div id="video-container">
+	<video id="video" preload="auto" controls autoplay loop webkit-playsinline poster="<%= @output[0][:thumbnail] %>">
+		<source id="webm-source" src="<%= @output[0][:webm] %>" type="video/webm"/>
+		<source id="mp4-source"  src="<%= @output[0][:mp4] %>"  type="video/mp4"/>
+	</video>
+</div>
+
+</body>
+</html>
