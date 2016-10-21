@@ -303,6 +303,42 @@ header {
 			line-height: 1.4;
 		}
 
+	#info input[type="checkbox"] {
+		position: relative;
+		background: #333;
+		width: 120px;
+		height: 36px;
+		-webkit-appearance: initial;
+		border-radius: 3px;
+		-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+		outline:none;
+		font: normal 12px/16px sans-serif;
+		cursor:pointer;
+	}
+		#info input[type="checkbox"]:after {
+			position:absolute;
+			top:5%;
+			display:block; 
+			line-height:32px;
+			width:45%;
+			height:90%;
+			background: #000;
+			text-align:center;
+			transition: all 0.25s ease-in 0s; 
+			color: #fff;
+			border: none;
+			border-radius:3px;
+		}
+		#info input[type="checkbox"]:after {
+			left:2%;
+			content: "OFF";
+		}
+		#info input[type="checkbox"]:checked:after {
+			left:53%;
+			content: "ON";
+			background: #50E3C2;
+		}
+
 #share {
 	position: fixed;
 	top: 0;
@@ -420,6 +456,11 @@ header {
 			<dt>Menu</dt>           <dd><span class="mono">M</span></dd>
 		</dl>
 
+		<dl>
+			<dt><label for="autoplay">Autoplay next gif<label></dt>
+			<dd><input name="autoplay" id="autoplay" type="checkbox"></dd>
+		</dl>
+
 		<p>Created by <a href="https://kash.im/">Abram Kash</a>, with content from, <a href="https://www.reddit.com/dev/api">reddit</a>, <a href="https://api.imgur.com/">imgur</a>, and <a href="https://gfycat.com/api">gfycat</a>.</p>
 	</div>
 	<div id="share">
@@ -467,7 +508,7 @@ var share  = qs("#share")
 var share_button = qs("#share-button")
 var share_url = qs("#share-url")
 var share_close = qs("#share-close")
-
+var autoplay_button = qs('#autoplay')
 
 // Thumbnail size toggles
 if (localStorage.getItem("video-size") === null) {
@@ -485,12 +526,23 @@ function maximize() {
 	localStorage.setItem("video-size", "large")
 }
 
+// Autoplay toggles
+var autoplay = false
+if (localStorage.getItem("autoplay") === null) {
+	localStorage.setItem("autoplay", "false")
+}
+if (localStorage.getItem("autoplay") === "true") {
+	autoplay_button.checked = true
+	autoplay = true
+}
+
 // Content
 var videos = <%= @output.to_json %>
 var current = videos[0]
 var index = 0
 var after = "<%= @after %>"
 var selected = "<%= @selected %>"
+var loops = 0
 
 if (selected !== "") {
 	menu.querySelector("option[value='"+ selected +"']").selected = true
@@ -549,6 +601,7 @@ function get(event) {
 }
 
 function nextVideo(current) {
+	loops = 0
 	video.pause()
 
 	video.setAttribute("poster", current.thumbnail)
@@ -635,6 +688,12 @@ document.addEventListener("keydown", function(event){
 })
 
 video.addEventListener("timeupdate", function(event){
+	if (video.currentTime == 0) {
+		loops++
+	}
+	if (loops > 4 && autoplay) {
+		get()	
+	}
 	container.style.backgroundColor = "black"
 })
 
@@ -643,6 +702,16 @@ video.addEventListener("click", function(event){
 		video.play()
 	} else {
 		video.pause()
+	}
+})
+
+autoplay_button.addEventListener("click", function(event){
+	if (event.target.checked == true) {
+		localStorage.setItem("autoplay", "true")
+		autoplay = true
+	} else {
+		localStorage.setItem("autoplay", "false")
+		autoplay = false
 	}
 })
 
