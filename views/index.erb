@@ -691,7 +691,7 @@ video.addEventListener("timeupdate", function(event){
 	if (video.currentTime == 0) {
 		loops++
 	}
-	if ((loops > 4 || loops * video.duration > 25) && autoplay) {
+	if ((loops > 10 || loops * video.duration > 25) && autoplay) {
 		get()
 	}
 	container.style.backgroundColor = "black"
