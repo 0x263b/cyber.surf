@@ -2,15 +2,15 @@ GEM
   remote: https://rubygems.org/
   specs:
     lmdb (0.4.8)
-    mustermann (1.0.2)
-    puma (3.11.4)
-    rack (2.0.5)
-    rack-protection (2.0.3)
+    mustermann (1.0.3)
+    puma (3.12.0)
+    rack (2.0.6)
+    rack-protection (2.0.4)
       rack
-    sinatra (2.0.3)
+    sinatra (2.0.4)
       mustermann (~> 1.0)
       rack (~> 2.0)
-      rack-protection (= 2.0.3)
+      rack-protection (= 2.0.4)
       tilt (~> 2.0)
     tilt (2.0.8)
 
@@ -23,4 +23,4 @@ DEPENDENCIES
   sinatra
 
 BUNDLED WITH
-   1.16.2
+   1.17.1
