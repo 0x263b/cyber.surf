@@ -87,7 +87,7 @@ helpers do
     if type == "imgur"
       doc = open(url, "Authorization" => IMGUR).read
     else
-      doc = open(url, "User-Agent" => "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0").read
+      doc = open(url, "User-Agent" => "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:64.0) Gecko/20100101 Firefox/64.0").read
     end
 
     return doc
